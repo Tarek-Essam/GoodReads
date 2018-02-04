@@ -2,14 +2,16 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Users(User):
-    image = models.ImageField(upload_to="imgs/", null=True, blank=True)
+    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
 
-    @property
-    def full_name(self):
-        return self.first_name + " " + self.last_name
+    def get_image(self):
+        image = self.image
+        image = split("/")
+        image = image[-1]
+        return image
 
 
 class Authors(models.Model):
@@ -29,9 +31,15 @@ class Books(models.Model):
     title = models.CharField(max_length=50)
     published_at = models.DateField(null=True)
     summary = models.TextField()
-    image = models.ImageField(upload_to="imgs/", null=True, blank=True)
+    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
     authors = models.ManyToManyField('Authors', blank=True)#book and authors
     user = models.ManyToManyField('Users', blank=True, through="Status")
+
+    def get_image(self):
+        image = self.image
+        image = split("/")
+        image = image[-1]
+        return image
 
     def __str__(self):
         return self.title
@@ -52,8 +60,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
 
 class Rate(models.Model):#books and user
     book = models.ForeignKey(Books, on_delete=models.CASCADE)
