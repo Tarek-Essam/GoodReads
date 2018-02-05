@@ -27,7 +27,7 @@ class Authors(models.Model):
     born_at = models.DateField(null=True)
     die_at = models.DateField(null=True)
     Bio = models.TextField()
-
+    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
     def __str__(self):
         return self.first_name + self.last_name
 
