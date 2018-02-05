@@ -6,5 +6,6 @@ urlpatterns = [
     path('', views.redirectToLogin),
     re_path('^login/$',login, {'template_name':'mysite/login.html'}),
     re_path('^home/$', views.Home),
+    path('mybooks/', views.myBooks)
     # re_path('^register/$', views.Register),
 ]
