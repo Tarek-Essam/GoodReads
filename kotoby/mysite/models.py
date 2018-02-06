@@ -15,21 +15,19 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
+    image = models.ImageField(upload_to="users", null=True, blank=True)
 
     def __str__(self):
         return self.user.get_full_name()
 
 class Authors(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     nationality = models.CharField(max_length=50)
-    born_at = models.DateField(null=True)
-    die_at = models.DateField(null=True)
+    born = models.CharField(max_length=100)
     Bio = models.TextField()
-    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
+    image = models.ImageField(upload_to="authors", null=True, blank=True)
     def __str__(self):
-        return self.first_name + self.last_name
+        return self.name
 
 
 
@@ -37,18 +35,20 @@ class Books(models.Model):
     title = models.CharField(max_length=50)
     published_at = models.DateField(null=True)
     summary = models.TextField()
-    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
+    image = models.ImageField(upload_to="books", null=True, blank=True)
     authors = models.ManyToManyField('Authors', blank=True)#book and authors
-    user = models.ManyToManyField('Profile', blank=True, through="Status")
+    user = models.ManyToManyField('Profile', blank=True, through="User_books")
 
     def __str__(self):
         return self.title
 
 
-class Status(models.Model):
+class User_books(models.Model):
     book = models.ForeignKey(Books, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     status = models.CharField(max_length=200)
+    rate = models.IntegerField()
+    review = models.IntegerField()
 
     def __str__(self):
         return self.status
@@ -60,12 +60,3 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-class Rate(models.Model):#books and user
-    book = models.ForeignKey(Books, on_delete=models.CASCADE)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    rate = models.IntegerField()
-    review = models.IntegerField()
-
-    def __str__(self):
-        return self.book

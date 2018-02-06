@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django import forms
 from django.contrib.auth import authenticate,login,logout
-from . import models
+from .models import *
 # from django.contrib.auth.forms import UserCreationForm
 
 def Home(request):
@@ -32,9 +32,16 @@ def redirectToLogin(request):
 #         return render(request, 'mysite/register.html',{'form':form})
 
 def myBooks(request):
-    books = list(models.Books.objects.values())
-    for book in books:
-        image = book['image'].split("/")[-1]
-        book['image'] = image
-    b = {'books' : books}
-    return render(request, 'mysite/mybooks.html', b)
+    #books = list(models.Books.objects.values())
+    # books = models.Books.objects.select_related('authors')
+    # books = books.query
+    books = Status.objects.filter(user=2)
+    books = [b.book for b in books]
+    author
+    # books = books.book
+    return HttpResponse(books)
+    # for book in books:
+    #     image = book['image'].split("/")[-1]
+    #     book['image'] = image
+    # b = {'books' : books}
+    # return render(request, 'mysite/mybooks.html', b)
