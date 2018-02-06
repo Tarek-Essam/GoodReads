@@ -1,24 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class Users(User):
     image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
 
     def __str__(self):
-        return self.user.get_full_name()
+        return self.first_name + " " + self.last_name
+
+    def get_image(self):
+        image = self.image
+        image = split("/")
+        image = image[-1]
+        return image
+
 
 class Authors(models.Model):
     first_name = models.CharField(max_length=50)
@@ -27,7 +21,7 @@ class Authors(models.Model):
     born_at = models.DateField(null=True)
     die_at = models.DateField(null=True)
     Bio = models.TextField()
-    image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
+
     def __str__(self):
         return self.first_name + self.last_name
 
@@ -39,7 +33,13 @@ class Books(models.Model):
     summary = models.TextField()
     image = models.ImageField(upload_to="mysite/static/", null=True, blank=True)
     authors = models.ManyToManyField('Authors', blank=True)#book and authors
-    user = models.ManyToManyField('Profile', blank=True, through="Status")
+    user = models.ManyToManyField('Users', blank=True, through="Status")
+
+    def get_image(self):
+        image = self.image
+        image = split("/")
+        image = image[-1]
+        return image
 
     def __str__(self):
         return self.title
@@ -47,7 +47,7 @@ class Books(models.Model):
 
 class Status(models.Model):
     book = models.ForeignKey(Books, on_delete=models.CASCADE)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
     status = models.CharField(max_length=200)
 
     def __str__(self):
@@ -63,7 +63,7 @@ class Category(models.Model):
 
 class Rate(models.Model):#books and user
     book = models.ForeignKey(Books, on_delete=models.CASCADE)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
     rate = models.IntegerField()
     review = models.IntegerField()
 

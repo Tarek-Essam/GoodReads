@@ -1,9 +1,2 @@
 {% extends "base.html" %}
-{% load static %}
-{% block content %}
-
-    {% for book in books  %}
-        <img src="{% static book.image %}" alt="">
-    {% endfor  %}
-
-{% endblock %}
+{% block title %}MyBooks{% endblock %}
