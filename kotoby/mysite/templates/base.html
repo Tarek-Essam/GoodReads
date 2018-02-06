@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>{% block title %}Home{% endblock %}</title>
+  <title>{% block title %}{% endblock %}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -31,7 +31,7 @@
 }
 @media screen and (min-width: 768px){
 .jumbotron {
-      padding-top:10px;
+      padding-top:15px;
 }
 }
 .navbar b ,.navbar span{
@@ -61,7 +61,14 @@
 {
   float: right;
   color: white;
-  margin-top: -33px;
+  margin-top: -28px;
+  margin-right: -30px;
+}
+.navbar-brand{
+  padding-top: 0px;
+}
+a{
+  color: #3773ff;
 }
   </style>
 </head>
@@ -70,10 +77,10 @@
 <nav class="navbar jumbotron">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#"><b>KOTOBY</b></a>
+      <a class="navbar-brand" href="{% url 'home' %}"><b>KOTOBY</b><img src="{% static 'logo3.png' %}" class="img-responsive img-circle" style="display:inline" width="70" height="70"></a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href="#"><b>MyBooks</b></a></li>
+      <li><a href="{% url 'mybooks' %}"><b>MyBooks</b></a></li>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><b>Browse</b><span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="#">cat 1</a></li>
@@ -81,7 +88,8 @@
           <li><a href="#">cat 3</a></li>
         </ul>
       </li>
-      <li><a href="#"><b>Authors</b></a></li>
+      <li><a href="{% url 'authors' %}"><b>Authors</b></a></li>
+      <li><a href="/logout"><i>logout</i></a></li>
     </ul>
     <form class="navbar-form navbar-left pull-right" action="">
       <div class="input-group">
@@ -104,19 +112,20 @@
                 <div id="sidebar" class="well">
                   {% block sidebar %}
                     <ul class="nav ">
-                        <li class="nav-header col-md-offset-3"><h3><b>Profile</b></h3></li>
-                        <img src="{% static 'user.png' %}" class="img-responsive img-circle col-md-offset-3" style="display:inline" width="50" height="50">
+                        <!-- <li class="nav-header col-md-offset-3"><h3><b>Profile</b></h3></li> -->
+                        <img src="{% static 'user.png' %}" class="img-responsive img-circle col-md-offset-3" style="display:inline" width="70" height="70">
                         <br>
                         <br>
-                        <li class="active"><b>Welcome </b><b>Enass</b><a href="Treqa"><i class="fa fa-edit fa-2x"></i></a>
+                        <li class="active"><b>Hi, </b><b>{% filter force_escape|upper %}{{ user.first_name }}{% endfilter %}</b>
+                          {% block anchor %}{% endblock %}
                         </li>
-                        <li><a href="#">link for any thing</a></li>
+                        <!-- <li><a href="#">link for extra </a></li> -->
                         <li class="nav-header col-md-offset-3"><h3><b>Shelf</b></h3></li>
-                        <li><a href="#">Favorite Books</a>
+                        <li><a href="{% url 'favorite' %}">Favorite Books</a>
                         </li>
-                        <li><a href="#">Currently Reading</a>
+                        <li><a href="{% url 'now' %}">Current Read</a>
                         </li>
-                        <li><a href="#">Future Reading</a>
+                        <li><a href="{% url 'future' %}">Future Reading</a>
                         </li>
                     </ul>
                     {% endblock %}

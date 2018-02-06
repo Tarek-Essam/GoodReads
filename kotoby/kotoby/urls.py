@@ -23,5 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mysite.urls')),
 ]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6a378b80aac19c132cb11ab1a5d9847088c95c45
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
