@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView, DetailView,TemplateView
-from django.http import HttpResponse ,HttpResponseRedirect ,JsonResponse
+from django.http import HttpResponse ,HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render_to_response
 from django.shortcuts import render, redirect
@@ -96,17 +96,11 @@ def profile(request, pk):
     else:
         return redirect('/login')
 
-# def mybooks(request):
-    # return render(request, 'mysite/mybooks.html')
 
 def authors(request):
-    all_authors = Authors.objects.all().order_by('name')
-    # authors = Authors.objects.order_by(.asc())
+    authors = Authors.objects.all()
     cat = Category.objects.all()
     request.cat = cat
-    paginator = Paginator(all_authors, 2)
-    page = request.GET.get('page')
-    authors = paginator.get_page(page)
     return render(request, 'mysite/authors.html', {'authors' : authors})
 
 def favorite(request):
@@ -165,8 +159,6 @@ def myBooks(request):
         book.remove = remove[i]
         book.rate = rate[i]
         book.avg = avg
-
-    # cat = Category.objects.all()
 
     return render(request, 'mysite/mybooks.html', {'books' : books })
 
@@ -274,13 +266,13 @@ def browse(request, catno):
 
 def addBook(request, add_id, state):
     exist = User_books.objects.filter(book=add_id, user=request.user.id)
-    x = Profile.objects.all()
     if(exist):
         User_books.objects.filter(book=add_id, user=request.user.id).update(status=state)
     else:
         b = Books.objects.get(id=add_id)
-        f = Profile.objects.get(id=request.user.id)
-        p = User_books(book=b, user=f, status=state, rate=0, review=0)
+        dd = Profile.objects.get(user_id=request.user.id).id
+        f = Profile.objects.get(id=dd)
+        p = User_books(book=b, user=f, status=state, rate=0, review=" ")
         p.save()
     return redirect(request.META['HTTP_REFERER'])
 

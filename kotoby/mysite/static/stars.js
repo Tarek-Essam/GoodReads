@@ -1,5 +1,5 @@
 let books = document.getElementsByClassName('stars')
-let allStars = document.getElementsByClassName('fa')
+let allStars = document.getElementsByTagName('span')
 
 for (var i = 0; i < allStars.length; i++) {
     allStars[i].addEventListener("mouseover", light)
@@ -54,5 +54,16 @@ function rate(e)
     let n = Array.prototype.indexOf.call(stars, e.target) + 1;
     let parent = e.target.parentElement
     parent.title = n
-
+    $.ajax({
+          url: '{% url "rate_no" %}',
+          data:{
+            'rate': n
+          },
+          dataType: 'json',
+          success: function (data) {
+            if (data.rate_avg) {
+              alert(data.rate_avg);
+            }
+          }
+        });
 }
