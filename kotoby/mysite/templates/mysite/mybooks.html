@@ -1,2 +1,133 @@
 {% extends "base.html" %}
-{% block title %}MyBooks{% endblock %}
+{% load static %}
+
+
+
+{% block content %}
+
+    <style>
+    .checked {
+    color: orange;
+    }
+    </style>
+    <table class="table table-bordered" style="text-align:center; vertical-align:middle;">
+        <thead style="text-align:center; vertical-align:middle;">
+            <th>Cover</th>
+            <th>title</th>
+            <th>Author</th>
+            <th>Avg Rating</th>
+            <th>Status</th>
+            <th>Rating</th>
+            <th>Action</th>
+        </thead>
+    {% for book in books%}
+        <tr>
+            <td>
+                <a href="{% url 'book' book.id %}">
+                    <img src="/media/{{book.image}}" width="80" height="120" style="display:inline; pointer:cursor" >
+                </a>
+            </td>
+            <td class="align-middle">
+                <a href="{% url 'book' book.id %}">
+                    <h4 style="display:inline">{{book.title}}</h4>
+                </a>
+            </td>
+
+            <td>
+                <a href="{% url 'author' book.author_id %}">
+                    <h6 style="display:inline">By: {{book.author}}</h6>
+                </a>
+            </td>
+            <td>
+                <b>{{book.avg}}</b>
+            </td>
+            <td>
+                <b>{{book.status}}</b>
+            </td>
+            <td title="{{book.rate}}" class="stars">
+                <span  class="fa fa-star"></span>
+                <span  class="fa fa-star"></span>
+                <span  class="fa fa-star"></span>
+                <span  class="fa fa-star"></span>
+                <span  class="fa fa-star"></span>
+            </td>
+            <td>
+                <a href="remove/{{book.remove}}">
+                    <img src="{% static 'cancel.png' %}" width="20" height="20">
+                </a>
+            </td>
+        </tr>
+
+    {% endfor  %}
+    </table>
+
+    <script>
+    let books = document.getElementsByClassName('stars')
+    let allStars = document.getElementsByTagName('span')
+
+    for (var i = 0; i < allStars.length; i++) {
+        allStars[i].addEventListener("mouseover", light)
+        allStars[i].addEventListener("mouseout", noLight)
+        allStars[i].addEventListener("click", rate)
+    }
+
+    function init(){
+        for (var i = 0; i < allStars.length; i++) {
+            allStars[i].removeAttribute("class")
+            allStars[i].classList.add("fa")
+            allStars[i].classList.add("fa-star")
+        }
+        for (let i = 0; i < books.length; i++) {
+            book = books[i]
+            starsNumber = Number(book.title)
+            stars = book.children
+            for (let i = 0; i < starsNumber; i++) {
+                stars[i].classList.add("checked")
+            }
+        }
+    }
+
+    init()
+
+    function light(e)
+    {
+        let stars = e.target.parentElement.children
+        for (var i = 0; i < stars.length; i++) {
+            stars[i].removeAttribute("class")
+            stars[i].classList.add("fa")
+            stars[i].classList.add("fa-star")
+        }
+        let n = Array.prototype.indexOf.call(stars, e.target);
+        for (let i = 0; i < n+1; i++) {
+            stars[i].classList.add("checked")
+        }
+    }
+
+    function noLight(e)
+    {
+        e.target.removeAttribute("class")
+        e.target.classList.add("fa")
+        e.target.classList.add("fa-star")
+        init()
+    }
+
+    function rate(e)
+    {
+      light(e)
+          let stars = e.target.parentElement.children
+          let n = Array.prototype.indexOf.call(stars, e.target) + 1;
+          let parent = e.target.parentElement
+          parent.title = n
+          let b_id = parent.id
+          $.ajax({
+                url: '{% url "rate_no" %}',
+                data:{
+                  'rate': n,
+                  'book': b_id
+                },
+                dataType: 'json',
+
+              });
+    }
+    </script>
+{% endblock %}

@@ -39,7 +39,7 @@
       <div class="jumbotron">
         <b><h3 class="fontfamily">Register</h3></b>
       </div>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-primary col-md-offset-4" type="submit">Submit</button>

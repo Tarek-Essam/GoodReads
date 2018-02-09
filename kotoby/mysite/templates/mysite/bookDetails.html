@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+.checked {
+color: orange;
+}
+</style>
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="/media/{{image}}" alt="book">
+        <ul >
+            <li><a href="{% url 'add' id 'FutureReading' %}">Future Reading</a></li>
+            <li><a href="{% url 'add' id 'favourites' %}">favourites</a></li>
+            <li><a href="{% url 'add' id 'CurrentlyReading' %}">Currently Reading</a></li>
+        </ul>
+        <h5>Rate this book</h5>
+        <div class="stars" id="{{myrating}}-{{id}}">
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="row">
+            <h1>{{title}}</h1>
+        </div>
+
+        <div class="row">
+            <h4><a href="{% url 'author' author_id %}">By : {{author_name}}</a></h4>
+        </div>
+        <div class="row starsavg" id="{{avg}}"  >
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+            <span  class="fa fa-star"></span>
+        </div>
+        <div class="row">
+            {{display_summary}}
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <br>
+
+</div>
+
+<div class="row">
+    <!-- <h3>Add Review</h3> -->
+    <div class="row">
+        <textarea placeholder="Review this book......." cols="50" rows="6" id="review"></textarea>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" type="button" name="button" id="reviewsave">Save</button>
+    </div>
+    <h3>Reviews</h3>
+    {% for review in reviews  %}
+        <table>
+            <thead>
+                <th>{{review.user_name}}</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{review.review}}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+<script type="text/javascript">
+    document.getElementById("reviewsave").addEventListener("click", review)
+    stars = document.getElementsByClassName('starsavg')[0]
+    avg = Math.floor(Number(stars.getAttribute('id')))
+    stars = stars.children
+
+    for (var i = 0; i < avg; i++) {
+        stars[i].classList.add("checked")
+    }
+
+    let book = document.getElementsByClassName('stars')[0]
+
+    book = book.children
+
+    for (var i = 0; i < book.length; i++) {
+        book[i].addEventListener("mouseover", light)
+        book[i].addEventListener("mouseout", noLight)
+        book[i].addEventListener("click", rate)
+    }
+
+    function init(){
+        for (var i = 0; i < book.length; i++) {
+            book[i].removeAttribute("class")
+            book[i].classList.add("fa")
+            book[i].classList.add("fa-star")
+        }
+        myrate = Number(book[0].parentElement.id.split("-")[0])
+
+        for (let i = 0; i < myrate; i++) {
+            book[i].classList.add("checked")
+        }
+    }
+
+    function light(e)
+    {
+        let stars = e.target.parentElement.children
+        for (var i = 0; i < stars.length; i++) {
+            stars[i].removeAttribute("class")
+            stars[i].classList.add("fa")
+            stars[i].classList.add("fa-star")
+        }
+        let n = Array.prototype.indexOf.call(book, e.target);
+        for (let i = 0; i < n+1; i++) {
+            book[i].classList.add("checked")
+        }
+    }
+
+    function noLight(e)
+    {
+        e.target.removeAttribute("class")
+        e.target.classList.add("fa")
+        e.target.classList.add("fa-star")
+        init()
+    }
+
+    function rate(e)
+    {
+        light(e)
+        // let stars = e.target.parentElement.children
+        let n = Array.prototype.indexOf.call(book, e.target) + 1;
+        let parent = e.target.parentElement
+        let b_id = Number(parent.id.split("-")[1])
+        parent.setAttribute("id", String(n) + "-" + b_id)
+        $.ajax({
+              url: '{% url "rate_no" %}',
+              data:{
+                'rate': n,
+                'book': b_id
+              },
+              dataType: 'json',
+
+            });
+    }
+    init()
+    function review(e) {
+        let book = document.getElementsByClassName('stars')[0]
+        let user_review = document.getElementById('review').value
+        let b_id = Number(book.id.split("-")[1])
+        $.ajax({
+              url: '{% url "review" %}',
+              data:{
+                'review': user_review,
+                'book': b_id
+              },
+              dataType: 'json',
+
+            });
+    }
+
+</script>
+
+{% endblock %}

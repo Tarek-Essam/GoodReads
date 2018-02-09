@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style media="screen">
+    #dd{
+        margin-top: 0;
+    }
+</style>
+
+
+    <div class="row">
+        <div class="col-md-4" >
+            <img src="/media/{{image}}" width="300">
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <h1>{{author_name}}</h1>
+            </div>
+            <div class="row">
+                <h4>Nationality : {{nationality}}</h4>
+            </div>
+            <div class="row">
+                <h4>Born : {{born}}</h4>
+            </div>
+            <div class="row">
+                <br>
+                <p>{{bio}}</p>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <h4>{{author_name}}'s Books</h4>
+        <table>
+            <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>
+                            <img src="/media/{{book.image}}" alt="" width="100">
+                        </td>
+                        <td>
+                            <h5>{{book.title}}</h5>
+                        </td>
+                        <td>
+                            <span  class="fa fa-star"></span>
+                            <span  class="fa fa-star"></span>
+                            <span  class="fa fa-star"></span>
+                            <span  class="fa fa-star"></span>
+                            <span  class="fa fa-star"></span>
+                        </td>
+                        <td>
+                            <ul >
+                                <li><a href="{% url 'add' book.id 'FutureReading' %}">Future Reading</a></li>
+                                <li><a href="{% url 'add' book.id 'favourites' %}">favourites</a></li>
+                                <li><a href="{% url 'add' book.id 'CurrentlyReading' %}">Currently Reading</a></li>
+                            </ul>
+                        </td>
+
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {{avgs}}
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+{% if books.count > 0 %}
+{% for BookResult in books %}
+
+  <!-- <li><a href="/showBook/{{ BookResult.id }}">{{ BookResult.title }}</a></li> -->
+  <a href="{% url 'book' BookResult.id %}"><img src="/media/{{ BookResult.image }}" class="img-responsive col-md-2" style="display:inline" width="100" height="140"/></a>
+  <h4 class="col-md-3" style="display:inline;color:black">Title: {{ BookResult.title }}<br /><br>by: <a href="{% url 'author' BookResult.authors.all.0.id %}">{{ BookResult.authors.all.0.name }}</a></h4>
+  {% endfor %}
+  {% else %}
+  <p>Sorry, No Books Found With This Title!</p>
+{% endif %}
+</div>
+<br>
+<br>
+<div class="container">
+{% if authors.count > 0 %}
+{% for AuthorResult in authors %}
+<a href="{% url 'author' AuthorResult.id %}"><img src="/media/{{ AuthorResult.image }}" class="img-responsive col-md-2" style="display:inline" width="100" height="140"/></a>
+<h4 class="col-md-3" style="display:inline;color:black">Name: {{ AuthorResult.name }}</h4>
+  <!-- <li><a href="/author/{{ AuthorResult.id }}">{{ AuthorResult.name }}</a></li> -->
+{% endfor %}
+{% else %}
+<p>Sorry, No Authors Found With This Title!</p>
+{% endif %}
+</div>
+{% endblock %}

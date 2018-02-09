@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.open>.dropdown-menu {
+    color:black;
+    background-color: black;
+  }
+  ul {
+  list-style-type: none;
+  }
+</style>
+{% for cat in listCat  %}
+    <table class="table table-bordered" style="vertical-align:middle;">
+        <thead style="text-align:center; vertical-align:middle;">
+            <th>{{cat.genre}}</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% for book in cat.books %}
+                        <figure style="display:inline-block">
+                            <a href="{% url 'book' book.id %}">
+                                <img src="/media/{{book.image}}" height="200">
+                            </a>
+                            <figcaption >
+                              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><b>Add To Shelf</b><span class="caret"></span></a>
+                                <ul class="dropdown-menu list-unstyled" style="list-style: none;">
+                                    <li><a href="{% url 'add' book.id 'FutureReading' %}">Future Reading</a></li>
+                                    <li><a href="{% url 'add' book.id 'favourites' %}">favourites</a></li>
+                                    <li><a href="{% url 'add' book.id 'CurrentlyReading' %}">Currently Reading</a></li>
+                                </ul>
+                            </figcaption>
+                        </figure>
+
+
+                    {% endfor %}
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+{% endfor %}
+
+{% endblock %}

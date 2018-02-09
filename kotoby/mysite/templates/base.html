@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   {% load static %}
+  <!-- <script src="{% static "search.js" %}" ></script> -->
   <style>
   .jumbotron {
     background-color:#2c3e50 !important;
@@ -75,25 +76,28 @@ a{
 <body>
 
 <nav class="navbar jumbotron">
-  <div class="container-fluid">
+  <div class="container">
     <div class="navbar-header">
       <a class="navbar-brand" href="{% url 'home' %}"><b>KOTOBY</b><img src="{% static 'logo3.png' %}" class="img-responsive img-circle" style="display:inline" width="70" height="70"></a>
     </div>
     <ul class="nav navbar-nav">
       <li><a href="{% url 'mybooks' %}"><b>MyBooks</b></a></li>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><b>Browse</b><span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">cat 1</a></li>
-          <li><a href="#">cat 2</a></li>
-          <li><a href="#">cat 3</a></li>
-        </ul>
+          <ul class="dropdown-menu">
+          {% block browse %}
+                  {% for gener in request.cat %}
+                      <li><a href="{% url 'browse' gener.id %}">{{gener.name}}</a></li>
+                  {% endfor %}
+                  <li><a href="{% url 'browse' 0 %}">All geners</a></li>
+           {% endblock %}
+          </ul>
       </li>
       <li><a href="{% url 'authors' %}"><b>Authors</b></a></li>
-      <li><a href="/logout"><i>logout</i></a></li>
     </ul>
-    <form class="navbar-form navbar-left pull-right" action="">
+    <a class="pull-right" href="/logout">logout</a>
+    <form class="navbar-form navbar-left pull-right" method="get" action="{% url 'search' %}">
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search" name="search">
+        <input id="search" type="text" class="form-control" placeholder="Search" name="search">
         <div class="input-group-btn">
           <button class="btn btn-default" type="submit">
             <i class="glyphicon glyphicon-search"></i>
@@ -113,7 +117,7 @@ a{
                   {% block sidebar %}
                     <ul class="nav ">
                         <!-- <li class="nav-header col-md-offset-3"><h3><b>Profile</b></h3></li> -->
-                        <img src="{% static 'user.png' %}" class="img-responsive img-circle col-md-offset-3" style="display:inline" width="70" height="70">
+                        <img src="/media/{{ request.user.profile.image }}" class="img-responsive img-circle col-md-offset-3" style="display:inline" width="70" height="70">
                         <br>
                         <br>
                         <li class="active"><b>Hi, </b><b>{% filter force_escape|upper %}{{ user.first_name }}{% endfilter %}</b>
