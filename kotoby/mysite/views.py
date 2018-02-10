@@ -98,9 +98,13 @@ def profile(request, pk):
 
 
 def authors(request):
-    authors = Authors.objects.all()
+    all_authors = Authors.objects.all().order_by('name')
+    # authors = Authors.objects.order_by(.asc())
     cat = Category.objects.all()
     request.cat = cat
+    paginator = Paginator(all_authors, 2)
+    page = request.GET.get('page')
+    authors = paginator.get_page(page)
     return render(request, 'mysite/authors.html', {'authors' : authors})
 
 def favorite(request):
